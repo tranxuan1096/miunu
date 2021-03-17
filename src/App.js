@@ -98,7 +98,10 @@ function App() {
 	};
 	const filterMenu = (collectData) => {
 		let inputData = collectData.toUpperCase();
-		$MENU.forEach((it, ix) => {
+		console.log(collectData);
+		// console.log($MENU);
+
+		state.menu.forEach((it, ix) => {
 			let itemName = it.name.toUpperCase();
 			if (itemName.indexOf(inputData) > -1) {
 				it.visible = true;
@@ -110,7 +113,7 @@ function App() {
 			...state,
 			menu: $MENU,
 		});
-		// console.log($MENU)
+		// console.log(state.menu);
 	};
 	const setTab = (collectTab) => {
 		$CART = [];

@@ -24,7 +24,7 @@ img {
 	position: relative;
 }
 .hidden {
-	display: none;
+	display: none !important;
 }
 .spacing {
 	height: 180px;
