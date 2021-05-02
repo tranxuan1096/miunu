@@ -1,9 +1,9 @@
 import React from 'react';
-import { getJSON, currencyFormat, removeElement, removeItemAll, getSheetURL } from "../../api/helper";
-import { $MENU, $CART, $SHEET } from "../../constant";
+import { getJSON, currencyFormat, removeElement, removeItemAll, getSheetURL } from "../../../api/helper";
+import { $MENU, $CART, $SHEET } from "../../../constant";
 import './menu-item.scss';
 const MenuItem = (props) => {
-    let item = props.data;
+    let item = props.data != undefined ? props.data : '';
     let viewMode = props.view;
     let [state, setState] = React.useState({
         count: 0,

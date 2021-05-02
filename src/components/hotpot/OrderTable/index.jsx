@@ -1,7 +1,7 @@
 import React from 'react';
 import './order-table.scss';
-import { getJSON, currencyFormat, removeElement, removeItemAll, getSheetURL } from "../../api/helper";
-import { $MENU, $CART, $SHEET } from "../../constant";
+import { getJSON, currencyFormat, removeElement, removeItemAll, getSheetURL } from "../../../api/helper";
+import { $MENU, $CART, $SHEET } from "../../../constant";
 
 const OrderTable = (props) => {
     let order = props.data;
