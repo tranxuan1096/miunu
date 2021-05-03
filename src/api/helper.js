@@ -78,4 +78,36 @@ function getSheetURL(base = "", tabNum = "1") {
 //   variable=resArray
 //   return resArray;
 // }
-export { getJSON, currencyFormat, removeElement, removeItemAll, getSheetURL };
+function makeID(length) {
+	var result = [];
+	var characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	var charactersLength = characters.length;
+	for (var i = 0; i < length; i++) {
+		result.push(
+			characters.charAt(Math.floor(Math.random() * charactersLength)),
+		);
+	}
+	return result.join("");
+}
+const getLocal = (name) => {
+	return JSON.parse(localStorage.getItem(name));
+};
+const removeLocal = (name) => {
+	localStorage.removeItem(name);
+};
+const setLocal = (name, value) => {
+	localStorage.setItem(name, JSON.stringify(value));
+};
+
+export {
+	getJSON,
+	currencyFormat,
+	removeElement,
+	removeItemAll,
+	getSheetURL,
+	makeID,
+	getLocal,
+	removeLocal,
+	setLocal,
+};

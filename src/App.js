@@ -3,7 +3,7 @@ import * as CONST from "./constant";
 import * as HELPER from "./api/helper";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import HotPot from "./containers/HotPot";
-import Monopoly from "./containers/Monopoly";
+import Miunopoly from "./containers/Miunopoly";
 
 function App() {
 	return (
@@ -13,7 +13,7 @@ function App() {
 					<HotPot />
 				</Route>
 				<Route path="/typhu">
-					<Monopoly />
+					<Miunopoly />
 				</Route>
 				<Route path="/"></Route>
 			</Switch>
