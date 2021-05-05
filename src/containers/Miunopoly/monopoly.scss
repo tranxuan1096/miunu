@@ -26,9 +26,13 @@
 			font-weight: 700;
 			font-size: 18px;
 			border: 1px solid #ebebeb;
+			cursor: pointer;
 			&.active {
 				background: var(--theme-color);
 				color: white;
+			}
+			@media screen and (max-width: 360px) {
+				padding: 10px;
 			}
 		}
 	}
@@ -44,6 +48,8 @@
 	justify-content: center;
 	min-height: 100vh;
 	background: whitesmoke;
+	position: relative;
+	padding: 10px;
 }
 .form-wrapper {
 	.form-control {

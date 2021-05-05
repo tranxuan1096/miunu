@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch, withRouter } from 'react-router-dom';
 import * as STORE from '../../../api/firestoreServices.js';
 import * as HELPER from '../../../api/helper';
 import * as FIREBASE from "../../../api/firebase";
@@ -13,8 +13,9 @@ const JoinRoomForm = () => {
 
     let [messText, setMess] = useState("");
 
-    let { path } = useRouteMatch();
+    let { path, url } = useRouteMatch();
     let history = useHistory();
+
 
     useEffect(() => {
         roomCode.current.focus();
@@ -50,7 +51,7 @@ const JoinRoomForm = () => {
                     let count = doc.data().peopleCount;
                     STORE.updateDoc('rooms', _roomCode, { peopleCount: count + 1 })
                     //Chuyển URL
-                    history.push(`${path}/room/${_roomCode}`)
+                    history.push(`${url}/room/${_roomCode}`)
                     //Lưu Local
                     HELPER.setLocal('miunopoly', { UID, roomCode: _roomCode })
                 }
@@ -82,4 +83,4 @@ const JoinRoomForm = () => {
         </form>
     );
 }
-export default JoinRoomForm;
+export default withRouter(JoinRoomForm);

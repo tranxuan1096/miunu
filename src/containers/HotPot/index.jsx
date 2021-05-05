@@ -3,6 +3,7 @@ import * as CONST from "../../constant";
 import * as HELPER from "../../api/helper";
 import OrderTable from '../../components/hotpot/OrderTable';
 import MenuWrapper from '../../components/hotpot/MenuWrapper';
+import NavBar from '../../components/NavBar';
 
 
 var $MENU = CONST.$MENU;
@@ -128,7 +129,8 @@ const HotPot = () => {
         console.log("settab");
     };
     return (
-        <div className="container">
+        <div className="container bistro">
+            <NavBar />
             <MenuWrapper
                 add={addTemp}
                 minus={minusTemp}

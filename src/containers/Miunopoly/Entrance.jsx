@@ -1,30 +1,35 @@
-import React from 'react';
-import { NavLink, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
-import { CreateRoomForm } from '../../components/miunopoly/CreateRoomForm';
-import JoinRoomForm from '../../components/miunopoly/JoinRoomForm.jsx/index.jsx';
-export const ACTIVE_CLASS = 'active';
+import React, { useEffect, useRef, useState } from 'react';
+import { NavLink, Route, Switch, useLocation, useRouteMatch, withRouter } from 'react-router-dom';
+import CreateRoomForm from '../../components/miunopoly/CreateRoomForm';
+import JoinRoomForm from '../../components/miunopoly/JoinRoomForm';
+import NavBar from '../../components/NavBar';
 
 // CONTAINERS
-export const Entrance = () => {
-    let { path, url } = useRouteMatch();
-    let location = useLocation();
+const Entrance = (props) => {
+    let [form, setForm] = useState(1);
 
+
+    const createRoom = e => {
+        e.preventDefault()
+        setForm(1)
+    }
+    const joinRoom = e => {
+        e.preventDefault()
+        setForm(2)
+    }
     return (
         <div className="center-container">
+            <NavBar />
             <div className="starter-form">
                 <div className="starter__choose">
-                    <NavLink className="starter__choose__link" activeClassName={location.pathname !== url ? null : ACTIVE_CLASS} to={`${url}`}>Tạo phòng</NavLink>
-                    <NavLink className="starter__choose__link" to={`${url}/joinRoom`}>Tham gia phòng</NavLink>
+                    <button className={`starter__choose__link ${form == 1 ? 'active' : ''}`} onClick={createRoom}>Tạo phòng</button>
+                    <button className={`starter__choose__link ${form == 2 ? 'active' : ''}`} onClick={joinRoom}>Tham gia phòng</button>
                 </div>
                 <div className="starter__setting">
-                    <Switch>
-                        <Route exact path={`${path}`}><CreateRoomForm /></Route>
-                        <Route exact path={`${path}/joinRoom`}><JoinRoomForm /></Route>
-
-                    </Switch>
+                    {form == 1 ? <CreateRoomForm /> : <JoinRoomForm />}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 export default Entrance;

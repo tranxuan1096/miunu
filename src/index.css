@@ -28,6 +28,9 @@ body {
 	margin-right: auto;
 	position: relative;
 }
+.container.bistro {
+	padding: 15px;
+}
 .hidden {
 	display: none !important;
 }

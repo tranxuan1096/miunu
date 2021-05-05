@@ -8,7 +8,7 @@ import * as FIREBASE from '../../../api/firebase';
 const FS = FIREBASE.firestore;
 
 // COMPONENTS
-export const CreateRoomForm = () => {
+const CreateRoomForm = () => {
     let roomCode = useRef(null);
     let maxPeople = useRef(null);
     let yourName = useRef(null);
@@ -17,7 +17,7 @@ export const CreateRoomForm = () => {
 
     let [messText, setMess] = useState("");
 
-    let { path } = useRouteMatch();
+    let { path, url } = useRouteMatch();
     let history = useHistory();
 
     useEffect(() => {
@@ -60,7 +60,7 @@ export const CreateRoomForm = () => {
             let userRef = FS.collection("rooms").doc(_roomCode).collection("users").doc(UID);
             STORE.setDoc_v2(userRef, userSet);
             //Chuyển URL
-            history.push(`${path}/room/${_roomCode}`);
+            history.push(`${url}/room/${_roomCode}`);
             //Lưu local
             HELPER.setLocal('miunopoly', { UID, roomCode: _roomCode });
         };
@@ -105,3 +105,4 @@ export const CreateRoomForm = () => {
         </form>
     );
 };
+export default CreateRoomForm;
