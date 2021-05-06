@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, Route, Switch, useLocation, useRouteMatch, withRouter } from 'react-router-dom';
-import CreateRoomForm from '../../components/miunopoly/CreateRoomForm';
-import JoinRoomForm from '../../components/miunopoly/JoinRoomForm';
-import NavBar from '../../components/NavBar';
+import React, { useState } from 'react';
+import CreateRoomForm from '../CreateRoomForm';
+import JoinRoomForm from '../JoinRoomForm';
+import NavBar from '../../NavBar';
 
 // CONTAINERS
 const Entrance = (props) => {

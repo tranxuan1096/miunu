@@ -123,6 +123,14 @@ function removeDoc(
 		.then(successCallback)
 		.catch(failCallback);
 }
+//Remove lấy ref từ bên ngoài
+function removeDoc_v2(
+	ref,
+	successCallback = successDefault,
+	failCallback = failDefault,
+) {
+	ref.delete().then(successCallback).catch(failCallback);
+}
 /*Xóa các field trong bản ghi
 var cityRef = db.collection('cities').doc('BJ');
 // Remove the 'capital' field from the document
@@ -146,11 +154,32 @@ async function getDoc(
 	successCallback = successGet,
 	failCallback = failDefault,
 ) {
-	let result = null;
 	await FS.collection(collectionName)
 		.doc(id)
 		.get()
 		.then(successCallback)
+		.catch(failCallback);
+}
+//Nhận return 1 bản ghi dạng promise
+async function getDocPromise(collectionName, id, failCallback = failDefault) {
+	let result = "";
+	await FS.collection(collectionName)
+		.doc(id)
+		.get()
+		.then((r) => {
+			result = r.data();
+		})
+		.catch(failCallback);
+	return result;
+}
+//Nhận return 1 bản ghi dạng promise (ref truyền)
+async function getDocPromise_v2(ref, failCallback = failDefault) {
+	let result = "";
+	await ref
+		.get()
+		.then((r) => {
+			result = r.data();
+		})
 		.catch(failCallback);
 	return result;
 }
@@ -169,6 +198,18 @@ async function getAllDoc(
 	await FS.collection(collectionName)
 		.get()
 		.then(successCallback)
+		.catch(failCallback);
+	return result;
+}
+async function getAllDoc_v2(ref, failCallback = failDefault) {
+	let result = [];
+	await ref
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((doc) => {
+				result.push(doc.data());
+			});
+		})
 		.catch(failCallback);
 	return result;
 }
@@ -230,6 +271,15 @@ function listenDoc(
 		.doc(id)
 		.onSnapshot(successCallback, failCallback);
 }
+function listenDoc_v2(ref, failCallback = failDefault) {
+	let result = [];
+	ref.onSnapshot((query) => {
+		query.forEach((doc) => {
+			result.push(doc.data());
+		});
+	}, failCallback);
+	return result;
+}
 function listenDocByCondition(
 	collectionName,
 	conditionObj,
@@ -251,10 +301,15 @@ export {
 	mergeDoc,
 	updateDoc,
 	removeDoc,
+	removeDoc_v2,
 	getDoc,
+	getDocPromise,
+	getDocPromise_v2,
 	getAllDoc,
+	getAllDoc_v2,
 	getDocByCondition,
 	getDocByCondition_t2,
 	listenDoc,
+	listenDoc_v2,
 	listenDocByCondition,
 };

@@ -1,12 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { NavLink, Route, Switch, useHistory, useLocation, useRouteMatch, withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Route, Switch, useHistory, useLocation, useRouteMatch, withRouter } from 'react-router-dom';
 import * as STORE from '../../api/firestoreServices.js';
 import * as HELPER from '../../api/helper';
-import CreateRoomForm from '../../components/miunopoly/CreateRoomForm/index.jsx';
-import JoinRoomForm from '../../components/miunopoly/JoinRoomForm/index.jsx';
-import { Room } from '../../components/miunopoly/Room';
-import PrivateRoute from '../../components/PrivateRoute/index.jsx';
-import Entrance from './Entrance';
+import Room from '../../components/miunopoly/Room';
+import Entrance from '../../components/miunopoly/Entrance';
 import './monopoly.scss';
 
 
@@ -19,7 +16,6 @@ const Miunopoly = (props) => {
         //Check local để chuyển route
         let localData = HELPER.getLocal('miunopoly')
         if (localData) {
-            console.log('Đang vào lại phòng');
             const afterGetRoom = (doc) => {
                 if (doc.exists) {
                     //có phòng
@@ -31,6 +27,8 @@ const Miunopoly = (props) => {
                         //phòng available
                         setLog(true);
                         history.push(`${path}/room/${localData.roomCode}`);
+                        console.log('Đã tham gia');
+
                     }
                     else {
                         //phòng unavailable
