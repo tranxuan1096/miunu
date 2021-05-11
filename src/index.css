@@ -3,12 +3,14 @@
 :root {
 	--theme-color: #e69138;
 	--selected-row: #fae8d4;
+	--theme-sub-color: #ffd166;
 	--block-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.38);
 	--btn-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.35);
 }
 * {
 	font-family: "Nunito", sans-serif;
 	box-sizing: border-box;
+	outline: none;
 }
 img {
 	max-width: 100%;

@@ -4,6 +4,7 @@ import * as HELPER from '../../../api/helper';
 import * as STORE from '../../../api/firestoreServices';
 import * as FIREBASE from "../../../api/firebase";
 import './room.scss';
+import { cleanup } from '@testing-library/react';
 const FS = FIREBASE.firestore;
 
 const Room = (props) => {
@@ -25,32 +26,32 @@ const Room = (props) => {
             let roomRef = FS.collection('rooms').doc(roomCode)
             let meRef = FS.collection("rooms").doc(roomCode).collection("users").doc(UID);
             let userRef = FS.collection("rooms").doc(roomCode).collection("users")
-            let realtimeUsers = await userRef.onSnapshot(q => {
+            var realtimeUsers = await userRef.onSnapshot(q => {
                 let ms = []
                 q.forEach(doc => {
                     ms.push(doc.data())
                 })
                 setUsers(ms);
             })
-            let realtimeRoom = await roomRef.onSnapshot(doc => {
+            var realtimeRoom = await roomRef.onSnapshot(doc => {
                 setRoom(doc.data())
             })
-            let realtimeMe = await meRef.onSnapshot(doc => {
+            var realtimeMe = await meRef.onSnapshot(doc => {
                 setMe(doc.data())
             })
 
-            let cleanup = () => {
-                //unmount clear subscribe
-                realtimeRoom();
-                realtimeMe();
-                realtimeUsers();
-            }
-            return cleanup;
         }
         else {
             history.push('typhu/room/' + localRoomCode);
         }
 
+        return function cleanup() {
+            console.log('unmount')
+            //unmount clear subscribe
+            realtimeRoom();
+            realtimeMe();
+            realtimeUsers();
+        }
     }
     const handleOut = e => {
         let UID = HELPER.getLocal('miunopoly').UID;
@@ -60,7 +61,7 @@ const Room = (props) => {
             setTimeout(() => {
                 console.log(UID, ' đã thoát!')
                 history.push(props.parentPath);
-            }, 1000);
+            }, 0);
         }
         //update số người trong phòng
         let count = room.peopleCount;
@@ -79,7 +80,7 @@ const Room = (props) => {
         </div>
         <div className="room-content">
             {/* {room ? room.roomCode : 'dsadas'} */}
-            {users && me ? <Users list={users} me={me.UID} /> : 'dsdads'}
+            {users && me ? <Users list={users} me={me.UID} /> : 'Load người chơi'}
         </div>
         <div className="room-footer-log">
 
@@ -89,18 +90,22 @@ const Room = (props) => {
 export default Room;
 
 const Users = (props) => {
-    let me = props.me ? props.me : '';
-    let [userList, setUserList] = useState(props.list)
-    console.log(userList)
+    let me = props.me ? props.me : null;
+    let list = props.list ? props.list : '';
+    let [userList, setUserList] = useState([])
+    const init = () => {
+        setUserList(list);
+    }
+    useEffect(init, [list])
     const getLink = (id) => {
         return `https://avatars.dicebear.com/api/avataaars/${id}.svg?mood[]=happy'`;
     }
     return (<div className="room-user-list">
         {userList.map((item, index) => {
             return (
-                <div key={index} className={`room-user-item ${item.UID == me ? 'me' : ''}`}>
+                <div key={index} className={`room-user-item ${item.UID == me ? 'me ' : ''}${item.role == 'admin' ? 'admin' : ''}`}>
                     <div className="user-avatar"><img src={getLink(item.UID)} alt={item.UID} /></div>
-                    <div className="user-name"> {item.userName}</div>
+                    <div className="user-name">{item.role == 'admin' ? <span>⭐</span> : ''} {item.userName}</div>
                 </div>
             )
         })}
