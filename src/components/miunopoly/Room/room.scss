@@ -1,3 +1,8 @@
+.container.room {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
 .header-action-bar {
 	display: flex;
 	justify-content: space-between;
@@ -52,7 +57,7 @@
 	flex-wrap: wrap;
 	.room-user-item {
 		margin: 10px;
-		width: calc(33.333% - 20px);
+		width: calc(25% - 20px);
 		cursor: pointer;
 		&:active {
 			.user-avatar {
@@ -98,7 +103,7 @@
 		padding-top: 100%;
 		position: relative;
 		transition: 0.25s all ease-in-out;
-
+		background: white;
 		img {
 			width: 100%;
 			height: 100%;
@@ -133,5 +138,29 @@
 			transition: 0.25s all ease-in-out;
 			z-index: -1;
 		}
+	}
+}
+.room-footer-log {
+	margin-top: auto;
+	background: white;
+	padding: 10px;
+	height: 100px;
+	box-shadow: var(--btn-shadow);
+}
+.history-wrapper {
+	height: 100%;
+	overflow-y: auto;
+}
+.history__line {
+	display: flex;
+	align-items: baseline;
+	font-size: 12px;
+
+	.line-time {
+		color: rgba($color: #000000, $alpha: 0.5);
+		margin-right: 8px;
+		min-width: 11%;
+	}
+	.line-content {
 	}
 }

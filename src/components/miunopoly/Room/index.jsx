@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import * as HELPER from '../../../api/helper';
 import * as STORE from '../../../api/firestoreServices';
@@ -35,6 +35,7 @@ const Room = (props) => {
             })
             var realtimeRoom = await roomRef.onSnapshot(doc => {
                 setRoom(doc.data())
+                console.log(room)
             })
             var realtimeMe = await meRef.onSnapshot(doc => {
                 setMe(doc.data())
@@ -63,9 +64,18 @@ const Room = (props) => {
                 history.push(props.parentPath);
             }, 0);
         }
-        //update số người trong phòng
+        //update số người trong phòng, mess
         let count = room.peopleCount;
-        FS.collection('rooms').doc(roomCode).update({ peopleCount: count - 1 })
+        let log = room.log;
+        let mess = {
+            timestamp: new Date(),
+            type: 'info',
+            from: '',
+            to: '',
+            mess: me.userName + " đã thoát!"
+        }
+        log.push(mess)
+        FS.collection('rooms').doc(roomCode).update({ peopleCount: count - 1, log })
         //delete user trên server
         let userRef = FS.collection("rooms").doc(roomCode).collection("users").doc(UID);
         STORE.removeDoc_v2(userRef, afterDelete);
@@ -79,11 +89,11 @@ const Room = (props) => {
             <span className="header-action-bar__setting">Set</span>
         </div>
         <div className="room-content">
-            {/* {room ? room.roomCode : 'dsadas'} */}
+
             {users && me ? <Users list={users} me={me.UID} /> : 'Load người chơi'}
         </div>
         <div className="room-footer-log">
-
+            {room ? <Log history={room.log} /> : 'Load log'}
         </div>
     </div>);
 };
@@ -111,5 +121,33 @@ const Users = (props) => {
         })}
     </div>);
 }
+const Log = (props) => {
+    let bottom = useRef();
+    let history = props.history ? props.history : '';
+    let [historyList, setHistoryList] = useState([])
+    const updateHistory = () => {
+        setHistoryList(history);
+        scrollToBottom();
+    }
+    useEffect(updateHistory, [history])
+    const init = () => {
+        setTimeout(scrollToBottom, 200)
+    }
+    useEffect(init, [-1])
 
-export { Users };
+    const scrollToBottom = () => {
+        bottom.current.scrollIntoView({ behavior: 'smooth' })
+    }
+    return (<div className="history-wrapper">
+        {historyList ? historyList.map((item, index) => {
+            return (
+                <div className="history__line" key={index}>
+                    <span className="line-time">({HELPER.timeConverter(item.timestamp)}): </span>
+                    <span className="line-content">{item.mess}</span>
+                </div>
+            )
+        }) : ''}
+        <div ref={bottom} />
+    </div>)
+}
+export { Users, Log };

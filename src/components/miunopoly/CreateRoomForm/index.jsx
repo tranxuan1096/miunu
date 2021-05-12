@@ -41,6 +41,14 @@ const CreateRoomForm = () => {
             userName: _yourName,
             userMoney: _starterMoney
         };
+        //init log
+        let mess = {
+            timestamp: new Date(),
+            type: 'info',
+            from: '',
+            to: '',
+            mess: "Admin" + _yourName + " đã tạo phòng!"
+        }
         //room data
         let dataSet = {
             roomCode: _roomCode,
@@ -51,7 +59,7 @@ const CreateRoomForm = () => {
             maxPeople: _maxPeople,
             starterMoney: _starterMoney,
             newRoundMoney: _newRoundMoney,
-            log: [],
+            log: [mess],
         };
         //Sau khi tạo phòng
         const afterSetRoom = () => {

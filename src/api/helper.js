@@ -99,7 +99,33 @@ const removeLocal = (name) => {
 const setLocal = (name, value) => {
 	localStorage.setItem(name, JSON.stringify(value));
 };
-
+function timeConverter(UNIX_timestamp) {
+	var a = new Date(UNIX_timestamp * 1000);
+	var months = [
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
+	];
+	var year = a.getFullYear();
+	var month = months[a.getMonth()];
+	var date = a.getDate();
+	var hour = a.getHours();
+	var min = a.getMinutes();
+	var sec = a.getSeconds();
+	//var time =
+	//date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
+	let time = hour + ":" + min;
+	return time;
+}
 export {
 	getJSON,
 	currencyFormat,
@@ -110,4 +136,5 @@ export {
 	getLocal,
 	removeLocal,
 	setLocal,
+	timeConverter,
 };

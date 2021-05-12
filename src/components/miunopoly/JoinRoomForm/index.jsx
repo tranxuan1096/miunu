@@ -46,10 +46,18 @@ const JoinRoomForm = () => {
                     }
                     let userRef = FS.collection("rooms").doc(_roomCode).collection("users").doc(UID);
                     STORE.setDoc_v2(userRef, userSet);
-                    console.log(_yourName + ' đã tham gia')
-                    //Tăng số người trong phòng
+                    //Tăng số người trong phòng, update mess
                     let count = doc.data().peopleCount;
-                    STORE.updateDoc('rooms', _roomCode, { peopleCount: count + 1 })
+                    let log = doc.data().log;
+                    let mess = {
+                        timestamp: new Date(),
+                        type: 'info',
+                        from: '',
+                        to: '',
+                        mess: _yourName + " đã tham gia phòng!"
+                    }
+                    log.push(mess);
+                    STORE.updateDoc('rooms', _roomCode, { peopleCount: count + 1, log })
                     //Chuyển URL
                     history.push(`${url}/room/${_roomCode}`)
                     //Lưu Local
