@@ -16,6 +16,7 @@ const MenuItem = (props) => {
             sum: 0,
             selected: false,
         });
+        // console.log(item)
     }, [props.reset]);
     const handleMinus = (item) => {
         if (state.count > 0) {

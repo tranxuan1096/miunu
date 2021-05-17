@@ -1,7 +1,7 @@
 import React from 'react';
 import './menu-wrapper.scss';
 import { $MENU, $SHEET, $CART } from "../../../constant";
-import { getJSON, currencyFormat, removeElement, removeItemAll, getSheetURL } from "../../../api/helper";
+import * as HELPER from "../../../api/helper";
 import MenuItem from '../MenuItem';
 
 
@@ -15,29 +15,40 @@ const MenuWrapper = (props) => {
     const filterRef = React.useRef("");
     const bistroRef = React.useRef(1);
 
+    async function fetchData() {
+        let url =
+            "https://spreadsheets.google.com/feeds/worksheets/" +
+            $SHEET.baseCode +
+            "/public/basic?alt=json";
+        const response = await HELPER.getJSON(url, function (err, data) {
+            let tempA = [];
+            if (err !== null) {
+                alert("Something went wrong: " + err);
+            } else {
+                let resArray = data.feed.entry;
+                resArray.forEach((item, index) => {
+                    let obj = item.title.$t;
+                    tempA.push(obj);
+                });
+            }
+            setState({ ...state, selections: tempA });
+            return tempA;
+        });
+    }
     React.useEffect(() => {
-        //get sheet name
-        async function fetchData() {
-            let url =
-                "https://spreadsheets.google.com/feeds/worksheets/" +
-                $SHEET.baseCode +
-                "/public/basic?alt=json";
-            const response = await getJSON(url, function (err, data) {
-                let tempA = [];
-                if (err !== null) {
-                    alert("Something went wrong: " + err);
-                } else {
-                    let resArray = data.feed.entry;
-                    resArray.forEach((item, index) => {
-                        let obj = item.title.$t;
-                        tempA.push(obj);
-                    });
-                }
-                setState({ ...state, selections: tempA });
-                return tempA;
-            });
+        if (window.navigator.onLine) {
+            //get sheet name
+            fetchData();
         }
-        fetchData();
+        else {
+            console.log('online, use local')
+            let select = []
+            let localArray = HELPER.getLocal('miuhotpot');
+            if (localArray) {
+                localArray.forEach(item => { if (item) select.push(item.menuName) })
+                setState({ ...state, selections: select });
+            }
+        }
     }, []);
 
     const changeView = () => {
