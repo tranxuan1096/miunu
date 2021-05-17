@@ -16,6 +16,7 @@ const MenuWrapper = (props) => {
     const bistroRef = React.useRef(1);
 
     React.useEffect(() => {
+        //get sheet name
         async function fetchData() {
             let url =
                 "https://spreadsheets.google.com/feeds/worksheets/" +
@@ -64,6 +65,12 @@ const MenuWrapper = (props) => {
     const selectChange = (e) => {
         props.setTab(bistroRef.current.value);
     };
+    const refreshHandle = e => {
+        console.log('f5')
+    }
+    const saveHandle = e => {
+        console.log('save')
+    }
     // const clearCart = () => {
 
     // 	props.clear();
@@ -138,7 +145,9 @@ const MenuWrapper = (props) => {
             </div>
             <h3 className="bistro-name">
                 Menu {props.bistroName ? props.bistroName : ""}
+                <p className="last-updated">({props.lastUpdate ? props.lastUpdate : ""})</p>
             </h3>
+
             <div className="action-bar">
                 <div className="action-filter-wrapper">
                     <input
@@ -148,14 +157,22 @@ const MenuWrapper = (props) => {
                         onKeyUp={inputChange}
                         placeholder="Tìm kiếm"
                     />
+
                     <button onClick={inputClear}>
-                        <i className="fa fa-times"></i>{" "}
+                        <i className="fa fa-times"></i>
                     </button>
+
                 </div>
                 <div className="quick-btn-wrapper">
                     {/* <button className="action-btn action-del" onClick={clearCart}>
 						<i className="far fa-trash-alt"></i>
-					</button> */}
+					</button> 
+                    <button className="action-btn" onClick={refreshHandle}>
+                        <i className="fas fa-sync-alt"></i>
+                    </button >
+                    <button className="action-btn" onClick={saveHandle}>
+                        <i className="far fa-save"></i>
+                    </button>*/}
                     <button
                         className="action-btn action-change-view"
                         onClick={changeView}
@@ -166,6 +183,7 @@ const MenuWrapper = (props) => {
                             <i className="fas fa-table"></i>
                         )}{" "}
                     </button>
+
                 </div>
             </div>
             {state.viewMode ? tableRender() : blocksRender()}

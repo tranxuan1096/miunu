@@ -15,13 +15,16 @@ const HotPot = () => {
         bistroName: "",
         bistroTab: "1", //also is resetITEM
         resetOrder: false,
+        lastUpdate: ""
     });
     async function fetchData() {
         const response = await HELPER.getJSON(
+            //get sheet content
             HELPER.getSheetURL("", state.bistroTab),
             function (err, data) {
                 let tempA = [];
                 let nameOfMenu = "";
+                let lastModified = "";
                 if (err !== null) {
                     alert("Something went wrong: " + err);
                 } else {
@@ -35,18 +38,50 @@ const HotPot = () => {
                             img: item.gsx$img ? item.gsx$img.$t : null,
                             visible: true,
                         };
+                        if (index === 0) {
+                            lastModified = item.gsx$lastmodified ? item.gsx$lastmodified.$t : '';
+                        }
                         //console.log(obj);
                         tempA.push(obj);
                     });
                 }
-                $MENU = tempA;
-                setState({ ...state, menu: tempA, bistroName: nameOfMenu });
+                // $MENU = tempA; SETLOCAL
+                //xử lý LOCAL
+                //khởi tạo
+                if (!HELPER.getLocal('miuhotpot')) {
+                    HELPER.setLocal('miuhotpot', []);
+                }
+                let localArray = HELPER.getLocal('miuhotpot');
+                //check xem có menu này chưa, chưa thì push vô lưu
+                if (localArray.filter(function (item) {
+                    if (item)
+                        return item.menuName === nameOfMenu && item.lastModified === lastModified;
+                    else return item
+                }).length < 1) {
+                    localArray[state.bistroTab - 1] = {
+                        menuName: nameOfMenu,
+                        lastModified,
+                        list: tempA,
+                    }
+                    HELPER.setLocal('miuhotpot', localArray)
+                }
+                console.log('online, use res')
+                setState({ ...state, menu: tempA, bistroName: nameOfMenu, lastUpdate: lastModified });
+
                 return tempA;
             });
 
     }
     React.useEffect(() => {
-        fetchData();
+        if (window.navigator.onLine) {
+            fetchData();
+        }
+        else {
+            console.log('online, use local')
+            let localArray = HELPER.getLocal('miuhotpot');
+            if (localArray[state.bistroTab - 1])
+                setState({ ...state, menu: localArray[state.bistroTab - 1].list, bistroName: localArray[state.bistroTab - 1].menuName, lastUpdate: localArray[state.bistroTab - 1].lastModified });
+        }
     }, [state.bistroTab]);
     const addTemp = (value) => {
         let hasI = 0;
@@ -135,11 +170,12 @@ const HotPot = () => {
                 add={addTemp}
                 minus={minusTemp}
                 clear={clearTemp}
-                view={state.viewMode}
                 collectFilter={filterMenu}
-                bistroName={state.bistroName}
-                menu={state.menu}
                 setTab={setTab}
+                view={state.viewMode}
+                bistroName={state.bistroName}
+                lastUpdate={state.lastUpdate}
+                menu={state.menu}
                 resetItem={state.bistroTab}
             />
             <OrderTable data={state.cart} reset={state.resetOrder} />

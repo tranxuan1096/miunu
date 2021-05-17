@@ -88,7 +88,7 @@
 	box-shadow: none;
 }
 .action-filter-input {
-	width: 200px;
+	width: 100%;
 	padding: 8px 45px 8px 8px;
 	border: 1px solid #b0b0b0;
 	border-radius: 5px;
@@ -148,8 +148,25 @@
 }
 .action-bar {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 20px;
 	padding: 10px 0;
+	.action-filter-wrapper {
+		width: 240px;
+	}
+	/*@include mx-rwd(450) {
+		.action-filter-wrapper,
+		.quick-btn-wrapper {
+			width: 100%;
+		}
+		.action-filter-wrapper {
+			margin-bottom: 20px;
+		}
+		.quick-btn-wrapper {
+			display: flex;
+			justify-content: flex-end;
+		}
+	}*/
 }

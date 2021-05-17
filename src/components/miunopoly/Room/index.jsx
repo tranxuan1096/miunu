@@ -8,6 +8,7 @@ import { cleanup } from '@testing-library/react';
 const FS = FIREBASE.firestore;
 
 const Room = (props) => {
+    let minichatRef = useRef('');
     let { roomCode } = useParams();
     let history = useHistory();
     let [room, setRoom] = useState(null)
@@ -21,7 +22,7 @@ const Room = (props) => {
     const init = async () => {
         let UID = HELPER.getLocal('miunopoly').UID;
         let localRoomCode = HELPER.getLocal('miunopoly').roomCode;
-        if (UID && localRoomCode && localRoomCode == roomCode) {
+        if ((UID && localRoomCode) && localRoomCode == roomCode) {
             //các ref
             let roomRef = FS.collection('rooms').doc(roomCode)
             let meRef = FS.collection("rooms").doc(roomCode).collection("users").doc(UID);
@@ -35,7 +36,6 @@ const Room = (props) => {
             })
             var realtimeRoom = await roomRef.onSnapshot(doc => {
                 setRoom(doc.data())
-                console.log(room)
             })
             var realtimeMe = await meRef.onSnapshot(doc => {
                 setMe(doc.data())
@@ -43,7 +43,8 @@ const Room = (props) => {
 
         }
         else {
-            history.push('typhu/room/' + localRoomCode);
+            // history.push('typhu/room/' + localRoomCode);
+            history.push('typhu/');
         }
 
         return function cleanup() {
@@ -82,6 +83,28 @@ const Room = (props) => {
         //delete localstorage
         HELPER.removeLocal('miunopoly');
     };
+    const handleChat = e => {
+        e.preventDefault();
+        let contentInput = minichatRef.current.value.trim();
+        if (contentInput === '') {
+            minichatRef.current.focus();
+        }
+        else {
+            let mess = {
+                timestamp: new Date(),
+                type: 'mess',
+                from: me.userName,
+                to: '',
+                mess: contentInput
+            }
+            let log = room.log;
+            log.push(mess)
+            FS.collection('rooms').doc(roomCode).update({ log })
+            minichatRef.current.value = '';
+            minichatRef.current.focus();
+        }
+
+    }
     return (<div className="container room">
         <div className="header-action-bar">
             <span className="header-action-bar__out"><button onClick={handleOut}>◁</button></span>
@@ -92,8 +115,14 @@ const Room = (props) => {
 
             {users && me ? <Users list={users} me={me.UID} /> : 'Load người chơi'}
         </div>
+
         <div className="room-footer-log">
+
             {room ? <Log history={room.log} /> : 'Load log'}
+            <form className="room-mini-chat" onSubmit={handleChat} >
+                <input className="mini-chat__input" type="text" ref={minichatRef} />
+                <button className="mini-chat__submit" type="submit">Gửi</button>
+            </form>
         </div>
     </div>);
 };
@@ -102,6 +131,7 @@ export default Room;
 const Users = (props) => {
     let me = props.me ? props.me : null;
     let list = props.list ? props.list : '';
+
     let [userList, setUserList] = useState([])
     const init = () => {
         setUserList(list);
@@ -127,11 +157,11 @@ const Log = (props) => {
     let [historyList, setHistoryList] = useState([])
     const updateHistory = () => {
         setHistoryList(history);
-        scrollToBottom();
+        setTimeout(scrollToBottom, 100)
     }
     useEffect(updateHistory, [history])
     const init = () => {
-        setTimeout(scrollToBottom, 200)
+        setTimeout(scrollToBottom, 100)
     }
     useEffect(init, [-1])
 
@@ -141,9 +171,9 @@ const Log = (props) => {
     return (<div className="history-wrapper">
         {historyList ? historyList.map((item, index) => {
             return (
-                <div className="history__line" key={index}>
-                    <span className="line-time">({HELPER.timeConverter(item.timestamp)}): </span>
-                    <span className="line-content">{item.mess}</span>
+                <div className={`history__line ${item.type ? item.type : ''}`} key={index}>
+                    <span className="line-time">({HELPER.timeConverter(item.timestamp)}) </span>
+                    <span className="line-content">{item.from ? <b>{item.from}:</b> : ''} {item.mess}</span>
                 </div>
             )
         }) : ''}
