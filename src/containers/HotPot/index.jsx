@@ -77,7 +77,7 @@ const HotPot = () => {
             fetchData();
         }
         else {
-            console.log('online, use local')
+            console.log('offline, use local')
             let localArray = HELPER.getLocal('miuhotpot');
             if (localArray[state.bistroTab - 1])
                 setState({ ...state, menu: localArray[state.bistroTab - 1].list, bistroName: localArray[state.bistroTab - 1].menuName, lastUpdate: localArray[state.bistroTab - 1].lastModified });
@@ -133,7 +133,7 @@ const HotPot = () => {
     };
     const filterMenu = (collectData) => {
         let inputData = collectData.toUpperCase();
-        console.log(collectData);
+        // console.log(collectData);
         // console.log($MENU);
 
         state.menu.forEach((it, ix) => {
@@ -146,7 +146,7 @@ const HotPot = () => {
         });
         setState({
             ...state,
-            menu: $MENU,
+            menu: state.menu,
         });
         // console.log(state.menu);
     };
